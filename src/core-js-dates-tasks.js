@@ -128,8 +128,18 @@ function getNextFriday(date) {
  * 1, 2024 => 31
  * 2, 2024 => 29
  */
-function getCountDaysInMonth(/* month, year */) {
-  throw new Error('Not implemented');
+function getCountDaysInMonth(month, year) {
+  const date = new Date();
+  date.setFullYear(year, month, 0);
+  date.setDate(31);
+  const day = date.getDate();
+  let result = 0;
+  if (day > 28) {
+    result = day;
+  } else {
+    result = 31 - day;
+  }
+  return result;
 }
 
 /**
@@ -143,8 +153,12 @@ function getCountDaysInMonth(/* month, year */) {
  * '2024-02-01T00:00:00.000Z', '2024-02-02T00:00:00.000Z'  => 2
  * '2024-02-01T00:00:00.000Z', '2024-02-12T00:00:00.000Z'  => 12
  */
-function getCountDaysOnPeriod(/* dateStart, dateEnd */) {
-  throw new Error('Not implemented');
+function getCountDaysOnPeriod(dateStart, dateEnd) {
+  const startDate = new Date(dateStart);
+  const endDate = new Date(dateEnd);
+  const totalDays =
+    (endDate.getTime() - startDate.getTime()) / 1000 / 60 / 60 / 24 + 1;
+  return totalDays;
 }
 
 /**
@@ -164,8 +178,17 @@ function getCountDaysOnPeriod(/* dateStart, dateEnd */) {
  * '2024-02-02', { start: '2024-02-02', end: '2024-03-02' } => true
  * '2024-02-10', { start: '2024-02-02', end: '2024-03-02' } => true
  */
-function isDateInPeriod(/* date, period */) {
-  throw new Error('Not implemented');
+function isDateInPeriod(date, period) {
+  const checkDate = new Date(date);
+  const startPeriod = new Date(period.start);
+  const endPeriod = new Date(period.end);
+  if (
+    checkDate.getTime() >= startPeriod.getTime() &&
+    checkDate.getTime() <= endPeriod.getTime()
+  ) {
+    return true;
+  }
+  return false;
 }
 
 /**
@@ -179,8 +202,25 @@ function isDateInPeriod(/* date, period */) {
  * '1999-01-05T02:20:00.000Z' => '1/5/1999, 2:20:00 AM'
  * '2010-12-15T22:59:00.000Z' => '12/15/2010, 10:59:00 PM'
  */
-function formatDate(/* date */) {
-  throw new Error('Not implemented');
+function formatDate(date) {
+  const newDate = new Date(date);
+  const day = newDate.getUTCDate();
+  const month = newDate.getUTCMonth() + 1;
+  const year = newDate.getUTCFullYear();
+  const hours =
+    newDate.getUTCHours() > 12
+      ? newDate.getUTCHours() % 12
+      : newDate.getUTCHours();
+  const amPm = newDate.getUTCHours() >= 12 ? 'PM' : 'AM';
+  const minutes =
+    newDate.getMinutes() > 9
+      ? `${newDate.getMinutes()}`
+      : `0${newDate.getMinutes()}`;
+  const seconds =
+    newDate.getSeconds() > 9
+      ? `${newDate.getSeconds()}`
+      : `0${newDate.getSeconds()}`;
+  return `${month}/${day}/${year}, ${hours}:${minutes}:${seconds} ${amPm}`;
 }
 
 /**
