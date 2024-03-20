@@ -235,10 +235,23 @@ function formatDate(date) {
  * 12, 2023 => 10
  * 1, 2024 => 8
  */
-function getCountWeekendsInMonth(/* month, year */) {
-  throw new Error('Not implemented');
-}
+function getCountWeekendsInMonth(month, year) {
+  const firstDay = new Date(year, month - 1, 1);
+  const lastDay = new Date(year, month, 0);
+  let weekends = 0;
+  for (
+    let nextDay = firstDay;
+    nextDay <= lastDay;
+    nextDay.setDate(nextDay.getDate() + 1)
+  ) {
+    const day = nextDay.getDay();
+    if (day === 0 || day === 6) {
+      weekends += 1;
+    }
+  }
 
+  return weekends;
+}
 /**
  * Returns the week number of the year for a given date.
  * The first week is the one that falls on January 1.
@@ -252,6 +265,7 @@ function getCountWeekendsInMonth(/* month, year */) {
  * Date(2024, 0, 31) => 5
  * Date(2024, 1, 23) => 8
  */
+
 function getWeekNumberByDate(/* date */) {
   throw new Error('Not implemented');
 }
