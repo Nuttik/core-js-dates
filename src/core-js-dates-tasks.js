@@ -129,17 +129,8 @@ function getNextFriday(date) {
  * 2, 2024 => 29
  */
 function getCountDaysInMonth(month, year) {
-  const date = new Date();
-  date.setFullYear(year, month, 0);
-  date.setDate(31);
-  const day = date.getDate();
-  let result = 0;
-  if (day > 28) {
-    result = day;
-  } else {
-    result = 31 - day;
-  }
-  return result;
+  const lastDay = new Date(year, month, 0);
+  return lastDay.getDate();
 }
 
 /**
@@ -264,12 +255,10 @@ function getCountWeekendsInMonth(month, year) {
  * Date(2024, 0, 3) => 1
  * Date(2024, 0, 31) => 5
  * Date(2024, 1, 23) => 8
- */
-
+ * */
 function getWeekNumberByDate(/* date */) {
   throw new Error('Not implemented');
 }
-
 /**
  * Returns the date of the next Friday the 13th from a given date.
  * Friday the 13th is considered an unlucky day in some cultures.
@@ -281,10 +270,31 @@ function getWeekNumberByDate(/* date */) {
  * Date(2024, 0, 13) => Date(2024, 8, 13)
  * Date(2023, 1, 1) => Date(2023, 9, 13)
  */
-function getNextFridayThe13th(/* date */) {
-  throw new Error('Not implemented');
+function getNextFridayThe13th(date) {
+  const firstDay = date.getDate();
+  if (firstDay <= 13) {
+    date.setDate(13);
+    if (date.getDay() === 5) return date;
+  }
+  let Friday13th;
+  let loop = true;
+  while (loop) {
+    const curretnMonth = date.getMonth();
+    if (curretnMonth < 11) {
+      date.setMonth(curretnMonth + 1);
+    } else {
+      date.setFullYear(date.getFullYear() + 1);
+      date.setMonth(0);
+    }
+    date.setDate(13);
+    if (date.getDay() === 5) {
+      Friday13th = date;
+      loop = false;
+      break;
+    }
+  }
+  return Friday13th;
 }
-
 /**
  * Returns the quarter of the year for a given date.
  *
@@ -296,8 +306,9 @@ function getNextFridayThe13th(/* date */) {
  * Date(2024, 5, 1) => 2
  * Date(2024, 10, 10) => 4
  */
-function getQuarter(/* date */) {
-  throw new Error('Not implemented');
+function getQuarter(date) {
+  const curretnMonth = date.getMonth();
+  return Math.ceil((curretnMonth + 1) / 3);
 }
 
 /**
@@ -318,8 +329,33 @@ function getQuarter(/* date */) {
  * { start: '01-01-2024', end: '15-01-2024' }, 1, 3 => ['01-01-2024', '05-01-2024', '09-01-2024', '13-01-2024']
  * { start: '01-01-2024', end: '10-01-2024' }, 1, 1 => ['01-01-2024', '03-01-2024', '05-01-2024', '07-01-2024', '09-01-2024']
  */
-function getWorkSchedule(/* period, countWorkDays, countOffDays */) {
-  throw new Error('Not implemented');
+function getWorkSchedule(period, countWorkDays, countOffDays) {
+  let startPeriod = new Date(period.start);
+  const endPeriod = new Date(period.end);
+  const workSchedule = [];
+  let loop = true;
+  while (loop) {
+    for (let i = 0; i < countWorkDays; i += 1) {
+      const nextDay = new Date(startPeriod.getTime() + 24 * 60 * 60 * 1000);
+      if (nextDay.getTime() >= endPeriod.getTime()) {
+        loop = false;
+        break;
+      } else {
+        workSchedule.push(nextDay);
+        startPeriod = nextDay;
+      }
+    }
+    for (let i = 0; i < countOffDays; i += 1) {
+      const nextDay = new Date(startPeriod.getTime() + 24 * 60 * 60 * 1000);
+      if (nextDay.getTime() >= endPeriod.getTime()) {
+        loop = false;
+        break;
+      } else {
+        startPeriod = nextDay;
+      }
+    }
+  }
+  return workSchedule;
 }
 
 /**
