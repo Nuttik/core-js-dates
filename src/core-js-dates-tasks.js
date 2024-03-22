@@ -329,34 +329,41 @@ function getQuarter(date) {
  * { start: '01-01-2024', end: '15-01-2024' }, 1, 3 => ['01-01-2024', '05-01-2024', '09-01-2024', '13-01-2024']
  * { start: '01-01-2024', end: '10-01-2024' }, 1, 1 => ['01-01-2024', '03-01-2024', '05-01-2024', '07-01-2024', '09-01-2024']
  */
-function getWorkSchedule(period, countWorkDays, countOffDays) {
-  let startPeriod = new Date(period.start);
-  const endPeriod = new Date(period.end);
-  const workSchedule = [];
-  let loop = true;
-  while (loop) {
-    for (let i = 0; i < countWorkDays; i += 1) {
-      const nextDay = new Date(startPeriod.getTime() + 24 * 60 * 60 * 1000);
-      if (nextDay.getTime() >= endPeriod.getTime()) {
-        loop = false;
-        break;
-      } else {
-        workSchedule.push(nextDay);
-        startPeriod = nextDay;
-      }
-    }
-    for (let i = 0; i < countOffDays; i += 1) {
-      const nextDay = new Date(startPeriod.getTime() + 24 * 60 * 60 * 1000);
-      if (nextDay.getTime() >= endPeriod.getTime()) {
-        loop = false;
-        break;
-      } else {
-        startPeriod = nextDay;
-      }
-    }
-  }
-  return workSchedule;
+
+function getWorkSchedule(/* period, countWorkDays, countOffDays */) {
+  throw new Error('Not implemented');
 }
+
+/**
+ * function getWorkSchedule(( period, countWorkDays, countOffDays ) {
+ * let startPeriod = new Date(period.start);
+ * const endPeriod = new Date(period.end);
+ * const workSchedule = [];
+ * let loop = true;
+ * while (loop) {
+ *   for (let i = 0; i < countWorkDays; i += 1) {
+ *     const nextDay = new Date(startPeriod.getTime() + 24 * 60 * 60 * 1000);
+ *     if (nextDay.getTime() >= endPeriod.getTime()) {
+ *       loop = false;
+ *       break;
+ *     } else {
+ *       workSchedule.push(nextDay);
+ *       startPeriod = nextDay;
+ *     }
+ *   }
+ *   for (let i = 0; i < countOffDays; i += 1) {
+ *     const nextDay = new Date(startPeriod.getTime() + 24 * 60 * 60 * 1000);
+ *     if (nextDay.getTime() >= endPeriod.getTime()) {
+ *       loop = false;
+ *       break;
+ *     } else {
+ *      startPeriod = nextDay;
+ *    }
+ *   }
+ *  }
+ *   return workSchedule;
+ * }
+ */
 
 /**
  * Determines whether the year in the provided date is a leap year.
@@ -370,8 +377,9 @@ function getWorkSchedule(period, countWorkDays, countOffDays) {
  * Date(2022, 2, 1) => false
  * Date(2020, 2, 1) => true
  */
-function isLeapYear(/* date */) {
-  throw new Error('Not implemented');
+function isLeapYear(date) {
+  const lastDayFebruary = new Date(date.getFullYear(), 2, 0).getDate();
+  return lastDayFebruary === 29;
 }
 
 module.exports = {
